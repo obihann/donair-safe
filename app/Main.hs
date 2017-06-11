@@ -2,18 +2,19 @@ import System.Environment
 import System.Exit
 import System.Directory
 import System.IO
-{-import Data.List-}
 
 import S3
 import Errors
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch =  [ ("load", S3.load)
+            , ("save", S3.save)
             , ("view", view)
             , ("help", help)
             , ("version", version)
             ]
 
+main :: IO ()
 main = do
     (command:args) <- getArgs
     let (Just action) = lookup command dispatch
@@ -23,7 +24,7 @@ help :: [String] -> IO ()
 help [] = putStrLn "Usage: donair [add|load|remove|help|version]"
 
 version :: [String] -> IO ()
-version [] = putStrLn "Donair Safe 0.1"
+version [] = putStrLn "Donair Safe 0.0.1"
 
 view :: [String] -> IO ()
 view [fileName] = do
