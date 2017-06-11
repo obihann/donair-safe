@@ -5,9 +5,10 @@ import System.IO
 {-import Data.List-}
 
 import S3
+import Errors
 
 dispatch :: [(String, [String] -> IO ())]
-dispatch =  [ ("load", load)
+dispatch =  [ ("load", S3.load)
             , ("view", view)
             , ("help", help)
             , ("version", version)
@@ -28,6 +29,8 @@ view :: [String] -> IO ()
 view [fileName] = do
     contents <- readFile fileName
     putStr contents
+view [] = do
+    Errors.die "Please provide a filename"
 
 exit :: IO ()
 exit = exitWith ExitSuccess
