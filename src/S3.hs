@@ -18,6 +18,16 @@ import Errors
 
 bucket = "donair-safe"
 
+{-getConfig :: (Aws.Configuration, S3.S3Configuration Aws.NormalQuery)-}
+{-getConfig = (Aws.baseConfiguration, Aws.defServiceConfig)-}
+
+encrypt :: [String] -> IO ()
+encrypt [fileName, key] = do
+    putStrLn fileName
+    putStrLn key
+encrypt [] = Errors.die "Please provide a filename to encrypt"
+encrypt [fileName] = Errors.die "Please provide an encryption key"
+
 load :: [String] -> IO ()
 load [fileName] = do
     cfg <- Aws.baseConfiguration

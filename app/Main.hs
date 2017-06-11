@@ -9,6 +9,7 @@ import Errors
 dispatch :: [(String, [String] -> IO ())]
 dispatch =  [ ("load", S3.load)
             , ("save", S3.save)
+            , ("encrypt", S3.encrypt)
             , ("help", help)
             , ("version", version)
             ]
