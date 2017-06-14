@@ -15,23 +15,15 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     S3, Errors
+  exposed-modules:     S3
+                     , Errors
+                     , KMS
   build-depends:       base >= 4.7 && < 5
                      , text
-                     , bytestring
                      , lens
-                     , amazonka            == 1.4.5.*
+                     , amazonka == 1.4.5.*
                      , amazonka-core
                      , amazonka-s3
-                     --, http-conduit
-                     --, conduit
-                     --, conduit-extra
-                     --, unix
-                     --, amazonka
-                     --, amazonka-apigateway
-                     --, amazonka-dynamodb
-                     --, amazonka-ec2
-                     --, amazonka-sqs
   default-language:    Haskell2010
 
 executable donair-safe-exe

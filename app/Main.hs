@@ -4,12 +4,13 @@ import System.Directory
 import System.IO
 
 import S3
+import KMS
 import Errors
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch =  [ ("load", S3.load)
             , ("save", S3.save)
-            , ("encrypt", S3.encrypt)
+            , ("encrypt", KMS.encrypt)
             , ("help", help)
             , ("version", version)
             ]
