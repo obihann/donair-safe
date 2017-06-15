@@ -2,40 +2,38 @@
 
 module S3 where
 
+import qualified Data.Conduit.Binary as CB
 import Data.Text (pack)
 import Control.Lens
+import Control.Monad
+import Control.Monad.IO.Class
 import Network.AWS
 import Network.AWS.S3
 import System.IO
 import Errors
 
-bucket = "donair-safe"
-
 load :: [String] -> IO ()
-{-load [fileName] = do-}
-    {-cfg <- Aws.baseConfiguration-}
-    {-let s3cfg = Aws.defServiceConfig :: S3.S3Configuration Aws.NormalQuery-}
+load [fileName] = do
+    log <- newLogger Debug stdout
+    env <- newEnv Discover <&> set envLogger log
+    let dst = (BucketName "donair-safe", ObjectKey $ pack fileName)
 
-    {-withManager $ \mgr -> do-}
-        {-S3.GetObjectResponse { S3.gorResponse = rsp } <--}
-            {-Aws.pureAws cfg s3cfg mgr $-}
-                {-S3.getObject bucket (pack fileName)-}
+    runResourceT . runAWS env $ do
+        rs <- send $ getObject (fst dst) (snd dst)
+        view gorsBody rs `sinkBody` CB.sinkFile fileName
+        liftIO . putStrLn $ "done"
 
-        {-responseBody rsp $$+- sinkFile fileName-}
 load [] = Errors.die "Please provide a filename to load"
 
 save :: [String] -> IO ()
 save [fileName] = do
-    env <- newEnv Discover
     log <- newLogger Debug stdout
+    env <- newEnv Discover <&> set envLogger log
     body <- toBody <$> hashedFile fileName
+    let dst = (BucketName "donair-safe", ObjectKey $ pack fileName)
 
-    let bucketName = BucketName "donair-safe"
-    let objectKey = ObjectKey $ pack fileName
-
-    runResourceT . runAWS (env & envLogger .~ log) $
-        send (putObject bucketName objectKey body)
-
-    putStrLn "done"
+    runResourceT . runAWS env $ do
+        void . send $ putObject (fst dst) (snd dst) body
+        liftIO . putStrLn $ "done"
 
 save [] = Errors.die "Please provide a filename to load"

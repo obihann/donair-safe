@@ -24,6 +24,7 @@ library
                      , amazonka == 1.4.5.*
                      , amazonka-core
                      , amazonka-s3
+                     , conduit-extra
   default-language:    Haskell2010
 
 executable donair-safe-exe
